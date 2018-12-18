@@ -1,0 +1,5 @@
+<?php
+    $hostdb= '';
+    $user=   '';
+    $pass =  '';
+?>
