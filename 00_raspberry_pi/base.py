@@ -117,10 +117,10 @@ class HomeBase:
         
     # Fetch a temperature from Open Weather API
     def GetInternetWeather(self):
-        call = user_logins.WEATHER_API_ADDRESS + "/data/2.5/weather?zip="+ WEATHER_API_ZIPCODE + ",us&APPID=" + user_logins.WEATHER_API_KEY
+        call = config.WEATHER_API_ADDRESS + "/data/2.5/weather?zip="+ config.WEATHER_API_ZIPCODE + ",us&APPID=" + config.WEATHER_API_KEY
         result = self.IssueRequest(call)
         
-        if result is Null:
+        if result is None:
             temp = 100.0
             logging.error("Problem accessing outdoor weather")
         else:
@@ -135,7 +135,7 @@ class HomeBase:
         
         self.internet_temp = temp
         
-    def ConvertKelvinToCelcius():
+    def ConvertKelvinToCelcius(self, temp):
         return temp - 273.15;
         
     def GetTempAndPress(self):
@@ -152,19 +152,19 @@ class HomeBase:
                     retry = 0
                 else:
                     logging.error("Request failed - status: " + r.status_code + " - " + r.text + " - " + call)
-                    r = Null
+                    r = None
 
             except (requests.ConnectionError, requests.ReadTimeout) as err:
                 logging.error("Request failed: " + str(err)  + " - " + call)
-                r = Null
+                r = None
 
         return r
 
     def SendTempAndPress(self, temp_in, press_in, temp_out):
-        call = user_logins.SERVER_ADDRESS + "new_temp.php?temp="+ str(temp_in) + "&air=" + str(press_in) + "&temp_out=" + str(temp_out)
+        call = config.HOST_SERVER_ADDRESS + "new_temp.php?temp="+ str(temp_in) + "&air=" + str(press_in) + "&temp_out=" + str(temp_out)
         result = self.IssueRequest(call)
         
-        if result is Null:
+        if result is None:
             logging.error("Failed to send data to server")
         else:
             logging.info("Data sent to database server")
@@ -247,7 +247,7 @@ class HomeBase:
         return True
             
 def main():
-    logging.basicConfig(filename='myapp.log', level=logging.INFO, format='%(ascitime)s %(message)s')
+    logging.basicConfig(filename='myapp.log', level=logging.INFO, format='%(asctime)s %(levelname)s %(message)s')
     
     home = HomeBase(start=True)
    
